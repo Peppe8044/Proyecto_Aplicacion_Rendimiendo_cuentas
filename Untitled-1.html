@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GastoÁgil | Transforma tus Gastos en Segundos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Waters -->
+    <!-- Application Structure Plan: A single-page application with a fixed navigation header for smooth scrolling between thematic sections. The structure is designed to guide the user through a persuasive narrative: 1. Hero (Immediate Value), 2. Problem (Empathy & Pain Points), 3. Solution (Clear, Step-by-Step Demo), 4. Benefits (Tangible Impact with Interactive Chart), 5. Social Proof (Trust), 6. Final CTA. This flow is chosen over a simple text page to create an engaging, app-like experience that actively demonstrates the product's value, boosting user understanding and conversion probability. -->
+    <!-- Visualization & Content Choices: 
+        - Hero: Info: App's core function. Goal: Engage. Viz: HTML/CSS animation of a phone scanning a receipt. Interaction: Visual animation on load. Justification: Show, don't just tell. Library: CSS.
+        - Problem: Info: User pain points. Goal: Empathize. Viz: Interactive cards. Interaction: Hover effects reveal icons and highlight text. Justification: Makes abstract problems feel more tangible. Library: CSS/JS.
+        - Solution: Info: How the app works. Goal: Educate. Viz: 3-step horizontal stepper. Interaction: Clicking tabs reveals content. Justification: Breaks down the process into easy, digestible steps. Library: JS.
+        - Benefits: Info: Time saved. Goal: Convince. Viz: Interactive Bar Chart. Interaction: A slider allows users to input their weekly hours, and the chart updates dynamically to show their potential time savings. Justification: Personalizes the benefit, making it far more impactful than a static claim. Library: Chart.js.
+        - Social Proof: Info: Testimonial. Goal: Build Trust. Viz: Clean card layout. Interaction: Static. Justification: Clear, classic presentation of trust signals. Library: N/A.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .hero-bg {
+            background-color: #eef2ff;
+            background-image: radial-gradient(#dbeafe 0.5px, transparent 0.5px), radial-gradient(#dbeafe 0.5px, #eef2ff 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        .nav-link {
+            transition: color 0.3s;
+        }
+        .nav-link.active {
+            color: #3b82f6;
+            font-weight: 500;
+        }
+        .problem-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .problem-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .step-icon {
+            transition: all 0.3s ease;
+        }
+        .tab.active {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .phone {
+            width: 250px;
+            height: 500px;
+            background: #1f2937;
+            border-radius: 30px;
+            border: 2px solid #4b5563;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .phone-screen {
+            width: 230px;
+            height: 480px;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .receipt {
+            position: absolute;
+            width: 80%;
+            left: 10%;
+            top: 20%;
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            line-height: 1.4;
+            animation: receipt-float 8s ease-in-out infinite;
+        }
+        @keyframes receipt-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .scan-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #3b82f6;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-between items-center h-16">
+                <a href="#" class="text-2xl font-bold text-blue-600">GastoÁgil</a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#inicio" class="nav-link active">Inicio</a>
+                    <a href="#problema" class="nav-link">El Problema</a>
+                    <a href="#solucion" class="nav-link">Solución</a>
+                    <a href="#beneficios" class="nav-link">Beneficios</a>
+                    <a href="#cta" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Prueba Gratis</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </nav>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <a href="#inicio" class="block py-2 px-4 text-sm nav-link active">Inicio</a>
+            <a href="#problema" class="block py-2 px-4 text-sm nav-link">El Problema</a>
+            <a href="#solucion" class="block py-2 px-4 text-sm nav-link">Solución</a>
+            <a href="#beneficios" class="block py-2 px-4 text-sm nav-link">Beneficios</a>
+            <a href="#cta" class="block py-2 px-4 text-sm bg-blue-50 text-blue-600 font-medium">Prueba Gratis</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="pt-24 pb-16 hero-bg">
+            <div class="container mx-auto px-4">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="text-center md:text-left">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">Transforma tus Gastos en Segundos. <span class="text-blue-600">Tu Tiempo Vuelve a Ti.</span></h1>
+                        <p class="text-lg md:text-xl text-gray-600 mb-8">La app móvil esencial para freelancers y PYMEs que quieren decir adiós al caos de los recibos y hola a la productividad.</p>
+                        <div class="flex justify-center md:justify-start space-x-4">
+                            <a href="#cta" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">Empieza tu Prueba Gratuita</a>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-500">Disponible en App Store y Google Play.</p>
+                    </div>
+                    <div class="flex justify-center">
+                        <div class="phone">
+                            <div class="phone-screen">
+                                <div class="p-4">
+                                    <p class="text-xs font-bold text-gray-500">ESCANEAR RECIBO</p>
+                                </div>
+                                <div class="receipt">
+                                    <p class="font-mono font-bold">CAFÉ CENTRAL</p>
+                                    <p class="font-mono">AV. PRINCIPAL 123</p>
+                                    <p class="font-mono">FECHA: 07/07/2025</p>
+                                    <p class="font-mono">--------------------</p>
+                                    <p class="font-mono">2x Café Americano.. $5.00</p>
+                                    <p class="font-mono">1x Croissant........ $3.50</p>
+                                    <p class="font-mono">--------------------</p>
+                                    <p class="font-mono font-bold">TOTAL............ $8.50</p>
+                                </div>
+                                <div class="scan-line"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="problema" class="py-20 bg-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">¿Cansado de Perder Tiempo y Dinero?</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">La gestión de gastos no debería ser un obstáculo. ¿Te suena familiar?</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="problem-card bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <div class="text-4xl mb-4">📄</div>
+                        <h3 class="text-xl font-semibold mb-2">Hojas de Cálculo y Recibos Perdidos</h3>
+                        <p class="text-gray-600">El caos de Excel y la búsqueda interminable de comprobantes físicos.</p>
+                    </div>
+                    <div class="problem-card bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <div class="text-4xl mb-4">⏳</div>
+                        <h3 class="text-xl font-semibold mb-2">Demoras en Reembolsos</h3>
+                        <p class="text-gray-600">Procesos de aprobación lentos y frustrantes que afectan tu flujo de caja.</p>
+                    </div>
+                    <div class="problem-card bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <div class="text-4xl mb-4">📉</div>
+                        <h3 class="text-xl font-semibold mb-2">Falta de Visibilidad</h3>
+                        <p class="text-gray-600">Incertidumbre sobre tus finanzas y el estado de tus gastos en tiempo real.</p>
+                    </div>
+                    <div class="problem-card bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <div class="text-4xl mb-4">🔁</div>
+                        <h3 class="text-xl font-semibold mb-2">Procesos Repetitivos</h3>
+                        <p class="text-gray-600">Tareas manuales que te quitan el foco de lo que realmente importa: tu negocio.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solucion" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Gestionar tus Gastos Ahora es Así de Fácil</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">En tres simples pasos, recuperas el control y tu tiempo.</p>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex justify-center border-b border-gray-200 mb-8" id="tabs-container">
+                        <button data-tab="1" class="tab flex-1 py-4 px-2 text-center font-medium text-gray-500 hover:bg-gray-100 active">
+                            <span class="step-icon text-2xl">📸</span><span class="hidden sm:inline ml-2">Paso 1: Captura</span>
+                        </button>
+                        <button data-tab="2" class="tab flex-1 py-4 px-2 text-center font-medium text-gray-500 hover:bg-gray-100">
+                            <span class="step-icon text-2xl">📊</span><span class="hidden sm:inline ml-2">Paso 2: Organiza</span>
+                        </button>
+                        <button data-tab="3" class="tab flex-1 py-4 px-2 text-center font-medium text-gray-500 hover:bg-gray-100">
+                            <span class="step-icon text-2xl">🚀</span><span class="hidden sm:inline ml-2">Paso 3: Envía</span>
+                        </button>
+                    </div>
+                    <div id="tabs-content">
+                        <div data-content="1" class="tab-content text-left p-6 bg-white rounded-lg shadow-sm">
+                            <h3 class="text-2xl font-bold mb-2 text-blue-600">Captura Instantánea</h3>
+                            <p class="text-gray-600">Toma una foto de tu recibo y nuestra tecnología OCR extrae los datos por ti. Edita si es necesario y olvídate para siempre de la entrada manual de datos.</p>
+                        </div>
+                        <div data-content="2" class="tab-content text-left p-6 bg-white rounded-lg shadow-sm hidden">
+                            <h3 class="text-2xl font-bold mb-2 text-blue-600">Organiza y Visualiza</h3>
+                            <p class="text-gray-600">Categoriza tus gastos con un toque y míralos en una lista clara y ordenada. Conoce el estado de cada reembolso ("Pendiente", "Aprobado", "Rechazado") al instante.</p>
+                        </div>
+                        <div data-content="3" class="tab-content text-left p-6 bg-white rounded-lg shadow-sm hidden">
+                            <h3 class="text-2xl font-bold mb-2 text-blue-600">Envía y Recupera tu Tiempo</h3>
+                            <p class="text-gray-600">Con un simple toque, envía tus informes de gastos. Así de rápido. Ahora tienes más tiempo para enfocarte en tus proyectos, clientes o simplemente, en disfrutar tu vida.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="beneficios" class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">El Impacto Real en Tu Productividad</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">Esto no es solo una app, es una inversión en tu recurso más valioso: el tiempo.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl">✓</div>
+                                <div class="ml-4">
+                                    <h4 class="text-xl font-semibold">Ahorra Tiempo Valioso</h4>
+                                    <p class="text-gray-600 mt-1">Recupera horas cada mes. Invierte tu tiempo donde realmente genera valor, no en papeleo.</p>
+                                </div>
+                            </div>
+                             <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl">✓</div>
+                                <div class="ml-4">
+                                    <h4 class="text-xl font-semibold">Control Financiero Total</h4>
+                                    <p class="text-gray-600 mt-1">Obtén una visión clara y centralizada de tus gastos. Toma decisiones más inteligentes.</p>
+                                </div>
+                            </div>
+                             <div class="flex items-start">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl">✓</div>
+                                <div class="ml-4">
+                                    <h4 class="text-xl font-semibold">Reembolsos a la Velocidad de la Luz</h4>
+                                    <p class="text-gray-600 mt-1">Agiliza las aprobaciones y recibe tu dinero en días, no en semanas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-xl border">
+                        <h3 class="text-xl font-bold text-center mb-4">Calcula tu Ahorro de Tiempo</h3>
+                        <div class="chart-container">
+                            <canvas id="timeSavedChart"></canvas>
+                        </div>
+                        <div class="mt-4">
+                            <label for="hoursSlider" class="block text-sm font-medium text-gray-700">Horas semanales en gestión de gastos:</label>
+                            <div class="flex items-center space-x-4">
+                               <input id="hoursSlider" type="range" min="1" max="10" value="4" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                               <span id="hoursValue" class="font-bold text-blue-600 w-12 text-center">4 hrs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="social-proof" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="max-w-3xl mx-auto text-center">
+                     <h2 class="text-3xl md:text-4xl font-bold mb-4">Miles ya están Simplificando sus Finanzas</h2>
+                    <div class="mt-8 bg-white p-8 rounded-xl shadow-md">
+                        <p class="text-lg text-gray-600 italic">"GastoÁgil ha cambiado por completo la forma en que manejamos los reembolsos. Lo que antes nos tomaba horas de trabajo manual y seguimiento, ahora se resuelve en minutos desde el celular. ¡Es una herramienta indispensable para cualquier freelancer o pequeña empresa que valore su tiempo!"</p>
+                        <p class="mt-6 font-semibold text-gray-900">— Joseline Bravo., Fundadora de una agencia de marketing</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="cta" class="py-20 bg-blue-600">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">¿Listo para Simplificar tu Vida Financiera?</h2>
+                <p class="text-lg text-blue-100 max-w-3xl mx-auto mb-8">No dejes que la gestión de gastos frene tu potencial. Únete a la nueva era de la productividad y experimenta la libertad de un control financiero inteligente.</p>
+                 <a href="#" class="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">Descargar y Empezar Gratis</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto py-8 px-4 text-center">
+            <div class="flex justify-center space-x-6 mb-4">
+                 <a href="#" class="text-gray-400 hover:text-white">Política de Privacidad</a>
+                 <a href="#" class="text-gray-400 hover:text-white">Términos y Condiciones</a>
+                 <a href="#" class="text-gray-400 hover:text-white">Contacto</a>
+            </div>
+            <p class="text-gray-500">&copy; 2025 GastoÁgil. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if(mobileMenu.offsetParent !== null){
+                         mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            const sections = document.querySelectorAll('section');
+            const header = document.getElementById('header');
+            
+            const options = {
+                rootMargin: `-${header.offsetHeight}px`,
+                threshold: 0.2
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, options);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            const tabsContainer = document.getElementById('tabs-container');
+            const tabsContent = document.getElementById('tabs-content');
+
+            tabsContainer.addEventListener('click', (e) => {
+                const tabButton = e.target.closest('.tab');
+                if (!tabButton) return;
+
+                tabsContainer.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+                tabButton.classList.add('active');
+
+                tabsContent.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                tabsContent.querySelector(`[data-content="${tabButton.dataset.tab}"]`).classList.remove('hidden');
+            });
+
+            const slider = document.getElementById('hoursSlider');
+            const hoursValue = document.getElementById('hoursValue');
+            const ctx = document.getElementById('timeSavedChart').getContext('2d');
+            
+            const chartData = {
+                labels: ['Gestión Manual', 'Con GastoÁgil'],
+                datasets: [{
+                    label: 'Horas por Mes',
+                    data: [16, 2],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            const timeSavedChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw} horas`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Horas Mensuales'
+                            }
+                        }
+                    }
+                }
+            });
+
+            function updateChart() {
+                const weeklyHours = parseInt(slider.value);
+                hoursValue.textContent = `${weeklyHours} hrs`;
+                const manualMonthlyHours = weeklyHours * 4;
+                const agileMonthlyHours = manualMonthlyHours * 0.125;
+                
+                timeSavedChart.data.datasets[0].data[0] = manualMonthlyHours;
+                timeSavedChart.data.datasets[0].data[1] = agileMonthlyHours.toFixed(1);
+                timeSavedChart.update();
+            }
+
+            slider.addEventListener('input', updateChart);
+            updateChart();
+        });
+    </script>
+</body>
+</html>
