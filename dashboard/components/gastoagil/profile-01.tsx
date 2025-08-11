@@ -1,6 +1,6 @@
-import type React from "react"
-import { LogOut, MoveUpRight, Settings, CreditCard, FileText, Receipt } from "lucide-react"
-import Image from "next/image"
+"use client"
+
+import { CreditCard, Receipt, Settings, FileText, MoveUpRight, LogOut } from "lucide-react"
 import Link from "next/link"
 
 interface MenuItem {
@@ -31,6 +31,14 @@ export default function Profile01({
   avatar = defaultProfile.avatar,
   subscription = defaultProfile.subscription,
 }: Partial<Profile01Props> = defaultProfile) {
+
+  const handleLogout = () => {
+    // Limpiar localStorage directamente
+    localStorage.removeItem("gastoagil_user")
+    // Redirigir a la landing page
+    window.location.href = "/"
+  }
+
   const menuItems: MenuItem[] = [
     {
       label: "Suscripción",
@@ -98,6 +106,7 @@ export default function Profile01({
 
             <button
               type="button"
+              onClick={handleLogout}
               className="w-full flex items-center justify-between p-2 
                                 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 
                                 rounded-lg transition-colors duration-200"

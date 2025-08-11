@@ -6,10 +6,34 @@ import io
 import json
 import os
 import re
+import platform
 from datetime import datetime
 
-# 👇 Fuerza el path manualmente (Windows)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+# 👇 Configuración automática del path de Tesseract según el sistema operativo
+def get_tesseract_path():
+    system = platform.system()
+    if system == "Windows":
+        # Rutas comunes en Windows
+        possible_paths = [
+            r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+            r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+            r"C:\Users\{}\AppData\Local\Programs\Tesseract-OCR\tesseract.exe".format(os.getenv('USERNAME', '')),
+        ]
+        for path in possible_paths:
+            if os.path.exists(path):
+                return path
+        # Si no se encuentra, usar el path por defecto
+        return r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    elif system == "Darwin":  # macOS
+        return "/usr/local/bin/tesseract"
+    else:  # Linux
+        return "/usr/bin/tesseract"
+
+# Configurar Tesseract
+try:
+    pytesseract.pytesseract.tesseract_cmd = get_tesseract_path()
+except Exception as e:
+    print(f"⚠️  Advertencia: No se pudo configurar Tesseract: {e}")
 
 app = FastAPI()
 

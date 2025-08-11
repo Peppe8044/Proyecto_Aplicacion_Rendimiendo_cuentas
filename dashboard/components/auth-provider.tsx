@@ -2,6 +2,13 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 
+// Declarar la función global de logout
+declare global {
+  interface Window {
+    gastoagilLogout?: () => void
+  }
+}
+
 interface User {
   id: string
   name: string
@@ -110,6 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null)
     localStorage.removeItem("gastoagil_user")
+    // No redirigir automáticamente, dejar que el componente maneje la redirección
   }
 
   const value = {
