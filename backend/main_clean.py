@@ -9,7 +9,7 @@ import re
 import platform
 from datetime import datetime
 
-# 👇 Configuración automática del path de Tesseract según el sistema operativo
+# Configuracion automatica del path de Tesseract segun el sistema operativo
 def get_tesseract_path():
     system = platform.system()
     if system == "Windows":
@@ -33,7 +33,7 @@ def get_tesseract_path():
 try:
     pytesseract.pytesseract.tesseract_cmd = get_tesseract_path()
 except Exception as e:
-    print(f"⚠️  Advertencia: No se pudo configurar Tesseract: {e}")
+    print(f"Advertencia: No se pudo configurar Tesseract: {e}")
 
 app = FastAPI()
 
@@ -54,21 +54,21 @@ async def extract_text(file: UploadFile = File(...)):
         image = Image.open(io.BytesIO(contents))
         text = pytesseract.image_to_string(image, lang='eng')
 
-        # Extraer información útil del texto
+        # Extraer informacion util del texto
         text_clean = text.strip()
         
-        # Intentar extraer información estructurada
+        # Intentar extraer informacion estructurada
         lines = text_clean.split('\n')
         merchant = lines[0] if lines else "Desconocido"
         
-        # Buscar total (patrón común: TOTAL, $, etc.)
+        # Buscar total (patron comun: TOTAL, $, etc.)
         total_amount = None
         for line in lines:
             if 'TOTAL' in line.upper() or '$' in line:
-                # Extraer números del texto
+                # Extraer numeros del texto
                 numbers = re.findall(r'\$?(\d+\.?\d*)', line)
                 if numbers:
-                    total_amount = float(numbers[-1])  # Último número encontrado
+                    total_amount = float(numbers[-1])  # Ultimo numero encontrado
                     break
         
         boleta = {
@@ -99,7 +99,7 @@ async def extract_text(file: UploadFile = File(...)):
         return boleta
 
     except UnidentifiedImageError:
-        raise HTTPException(status_code=400, detail="El archivo no es una imagen válida.")
+        raise HTTPException(status_code=400, detail="El archivo no es una imagen valida.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error interno al procesar la imagen: {str(e)}")
 
@@ -118,4 +118,4 @@ def listar_boletas():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8001)
