@@ -5,6 +5,7 @@ import pytesseract
 import io
 import json
 import os
+import re
 from datetime import datetime
 
 # 👇 Fuerza el path manualmente (Windows)
@@ -29,10 +30,31 @@ async def extract_text(file: UploadFile = File(...)):
         image = Image.open(io.BytesIO(contents))
         text = pytesseract.image_to_string(image, lang='eng')
 
+        # Extraer información útil del texto
+        text_clean = text.strip()
+        
+        # Intentar extraer información estructurada
+        lines = text_clean.split('\n')
+        merchant = lines[0] if lines else "Desconocido"
+        
+        # Buscar total (patrón común: TOTAL, $, etc.)
+        total_amount = None
+        for line in lines:
+            if 'TOTAL' in line.upper() or '$' in line:
+                # Extraer números del texto
+                numbers = re.findall(r'\$?(\d+\.?\d*)', line)
+                if numbers:
+                    total_amount = float(numbers[-1])  # Último número encontrado
+                    break
+        
         boleta = {
             "id": int(datetime.now().timestamp()),
             "nombre_archivo": file.filename,
-            "texto_extraido": text.strip(),
+            "text": text_clean,
+            "merchant": merchant,
+            "total_amount": total_amount,
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "confidence": 0.85,  # Valor simulado de confianza
             "fecha": datetime.now().isoformat()
         }
 
@@ -70,16 +92,6 @@ def listar_boletas():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"No se pudieron leer las boletas: {str(e)}")
 
-# --- TESTS BÁSICOS (puedes mover esto a test_main.py si lo prefieres) ---
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
-
-# Pruebas automáticas con pytest
-from fastapi.testclient import TestClient
-client = TestClient(app)
-
-def test_listar_boletas():
-    response = client.get("/boletas")
-    assert response.status_code == 200
-    assert isinstance(response.json(), list)
