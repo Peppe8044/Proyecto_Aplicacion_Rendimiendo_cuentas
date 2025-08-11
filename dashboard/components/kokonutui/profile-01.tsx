@@ -6,7 +6,6 @@ import { LogOut, MoveUpRight, Settings, CreditCard, FileText } from "lucide-reac
 import Image from "next/image"
 import Link from "next/link"
 import { useAuth } from "@/components/auth-provider"
-import { useRouter } from "next/navigation"
 
 interface MenuItem {
   label: string
@@ -30,11 +29,9 @@ export default function Profile01({
   subscription = "Plan Básico",
 }: Profile01Props) {
   const { logout } = useAuth()
-  const router = useRouter()
 
   const handleLogout = () => {
     logout()
-    router.push("/")
   }
 
   const menuItems: MenuItem[] = [
