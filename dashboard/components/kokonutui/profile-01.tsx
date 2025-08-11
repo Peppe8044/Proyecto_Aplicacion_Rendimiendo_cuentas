@@ -34,7 +34,7 @@ export default function Profile01({
 
   const handleLogout = () => {
     logout()
-    router.push("/")
+    router.push("/auth/login")
   }
 
   const menuItems: MenuItem[] = [
