@@ -1,152 +1,65 @@
-# GastoÁgil
+# GastoÁgil - Gestión Inteligente de Gastos
 
-## 🚀 Descripción
-Aplicación web completa para escanear boletas/recibos, extraer texto automáticamente usando OCR y gestionar gastos de forma inteligente. Incluye una landing page moderna, backend en FastAPI con OCR, y un dashboard completo en Next.js.
+## Descripción
 
-## ✨ Características Principales
+GastoÁgil es una aplicación web completa para escanear boletas/recibos, extraer texto automáticamente usando OCR y gestionar gastos de forma inteligente. Incluye una landing page moderna, backend en FastAPI con OCR, y un dashboard completo en Next.js.
 
-### 🔍 **OCR Inteligente**
-- Escaneo automático de recibos y boletas
-- Extracción de texto con Tesseract OCR
-- Detección automática de comercio, total y fecha
-- Almacenamiento estructurado de datos
+## Características Principales
 
-### 🎯 **Dashboard Completo**
-- Sistema de autenticación (login/registro)
-- Gestión de gastos y transacciones
-- Panel de administración para usuarios admin
-- Reportes y estadísticas en tiempo real
-- Integración completa con OCR
+- **OCR Inteligente**: Escaneo automático de recibos y boletas
+- **Dashboard Completo**: Gestión de gastos y transacciones
+- **Landing Page Moderna**: Diseño responsive y atractivo
+- **Inicio Automático**: Script que levanta todo el proyecto
 
-### 🌐 **Landing Page Moderna**
-- Diseño responsive y atractivo
-- Navegación suave entre secciones
-- Gráficos interactivos de ahorro de tiempo
-- Call-to-action optimizado
+## Tecnologías
 
-## 🏗️ Estructura del Proyecto
+### Backend
+- **FastAPI** - Framework web moderno y rápido
+- **Tesseract OCR** - Extracción de texto de imágenes
+- **Python 3.12+** - Lenguaje principal
 
-```
-Proyecto_Aplicacion_Rendimiendo_cuentas/
-├── backend/                 # API FastAPI + OCR
-│   ├── main.py             # Servidor principal
-│   ├── requirements.txt    # Dependencias Python
-│   └── boletas/           # Almacenamiento de boletas
-├── frontend/               # Landing page
-│   ├── index.html         # Página principal
-│   ├── styles.css         # Estilos CSS
-│   └── script.js          # Funcionalidad JavaScript
-├── dashboard/              # App Next.js completa
-│   ├── app/               # Páginas y rutas
-│   ├── components/        # Componentes React
-│   ├── package.json       # Dependencias Node.js
-│   └── ...
-├── start-project.bat      # Script de inicio automático
-└── README.md              # Este archivo
-```
+### Frontend
+- **Next.js 15** - Framework React con App Router
+- **TypeScript** - Tipado estático
+- **Tailwind CSS** - Framework CSS utility-first
+- **Shadcn/ui** - Componentes UI modernos
 
-## 🛠️ Requisitos
+## Instalación y Ejecución
 
+### Requisitos Previos
 - **Python 3.8+** con pip
 - **Node.js 18+** con npm
 - **Tesseract-OCR** instalado en el sistema
-- **Git** para clonar el repositorio
 
-## 🚀 Instalación y Ejecución
+### Inicio Automático (Recomendado)
+1. **Clonar el repositorio**
+2. **Doble clic** en `start-simple.bat`
+3. **Esperar** a que se abran las ventanas automáticamente
 
-### ⚡ **Opción 1: Script Automático (Recomendado)**
-1. **Doble clic** en `start-project.bat`
-2. Se abrirán automáticamente backend y frontend
-3. Backend: http://127.0.0.1:8000
-4. Frontend: http://localhost:3000
+### URLs Disponibles
+- **Backend API**: http://127.0.0.1:8001
+- **Dashboard**: http://localhost:3000
+- **Documentación API**: http://127.0.0.1:8001/docs
+- **Landing Page**: Abrir `frontend/index.html`
 
-### 🔧 **Opción 2: Manual**
+## Documentación Técnica
 
-#### Backend (FastAPI)
-```bash
-cd backend
-pip install -r requirements.txt
-python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
-```
+Para desarrolladores y contribuidores:
 
-#### Frontend (Landing)
-1. Abre `frontend/index.html` en tu navegador
-2. Haz clic en "Iniciar Sesión" para ir al dashboard
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Arquitectura del sistema y diagramas
+- **[TECHNICAL-ANALYSIS.md](./TECHNICAL-ANALYSIS.md)** - Análisis exhaustivo y roadmap
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Guía para desarrolladores
+- **[test-integration.md](./test-integration.md)** - Guía de pruebas
 
-#### Dashboard (GastoÁgil)
-```bash
-cd dashboard
-npm install --legacy-peer-deps
-npm run dev
-```
+## Estado del Proyecto
 
-## 🔌 API Endpoints
+- **Backend OCR**: Completamente funcional
+- **Dashboard**: Sistema completo de gestión
+- **Landing Page**: Diseño moderno implementado
+- **Base de Datos**: En desarrollo (actualmente JSON)
+- **Autenticación**: Sistema básico implementado
 
-### POST `/ocr`
-Sube una imagen y extrae texto usando OCR
-- **Body**: `FormData` con archivo de imagen
-- **Response**: JSON con texto extraído y metadatos
-
-### GET `/boletas`
-Lista todas las boletas procesadas
-- **Response**: Array de boletas con información completa
-
-## 🎨 Tecnologías Utilizadas
-
-### Backend
-- **FastAPI**: Framework web moderno y rápido
-- **Pillow**: Procesamiento de imágenes
-- **Tesseract**: OCR para extracción de texto
-- **Uvicorn**: Servidor ASGI de alto rendimiento
-
-### Frontend
-- **Next.js 14**: Framework React con App Router
-- **TypeScript**: Tipado estático para mejor desarrollo
-- **Tailwind CSS**: Framework CSS utility-first
-- **Shadcn/ui**: Componentes UI modernos y accesibles
-
-### Landing Page
-- **HTML5**: Estructura semántica
-- **CSS3**: Estilos modernos con animaciones
-- **JavaScript**: Interactividad y funcionalidad
-- **Chart.js**: Gráficos interactivos
-
-## 📱 Funcionalidades del Dashboard
-
-### 👤 **Gestión de Usuarios**
-- Registro e inicio de sesión
-- Diferentes roles: usuario, administrador
-- Perfiles personalizables
-
-### 💰 **Gestión de Gastos**
-- Escaneo de recibos con OCR
-- Categorización automática
-- Historial completo de transacciones
-- Aprobaciones y reembolsos
-
-### 📊 **Reportes y Analytics**
-- Estadísticas en tiempo real
-- Gráficos de gastos por categoría
-- Exportación de datos
-- Dashboard personalizable
-
-## 🔒 Seguridad
-
-- Autenticación JWT
-- Validación de archivos
-- CORS configurado para desarrollo
-- Sanitización de datos OCR
-
-## 🚧 Estado del Proyecto
-
-- ✅ **Backend OCR**: Completamente funcional
-- ✅ **Landing Page**: Diseño moderno implementado
-- ✅ **Dashboard**: Sistema completo de gestión
-- ✅ **Integración**: OCR conectado al dashboard
-- 🔄 **Base de Datos**: En desarrollo (actualmente JSON)
-- 🔄 **Autenticación**: Sistema básico implementado
-
-## 🤝 Contribuir
+## Contribuir
 
 1. Fork el proyecto
 2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
@@ -154,23 +67,15 @@ Lista todas las boletas procesadas
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-## 📄 Licencia
+## Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT.
 
-## 📞 Soporte
+## Soporte
 
 - **Issues**: Reporta bugs en GitHub Issues
-- **Discusiones**: Únete a las discusiones del proyecto
-- **Email**: [Tu email aquí]
-
-## 🙏 Agradecimientos
-
-- **Tesseract OCR**: Por la tecnología de reconocimiento de texto
-- **FastAPI**: Por el framework web moderno y rápido
-- **Next.js**: Por la excelente experiencia de desarrollo React
-- **Shadcn/ui**: Por los componentes UI de alta calidad
+- **Documentación**: Revisa los archivos técnicos en `/docs`
 
 ---
 
-**GastoÁgil** - Transformando la gestión de gastos para freelancers y PYMEs 🚀
+**GastoÁgil** - Transformando la gestión de gastos para freelancers y PYMEs
