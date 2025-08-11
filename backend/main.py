@@ -7,9 +7,11 @@ import json
 import os
 import re
 from datetime import datetime
+import platform
 
-# 👇 Fuerza el path manualmente (Windows)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+# 👇 Configura manualmente la ruta solo en Windows
+if platform.system() == "Windows":
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 app = FastAPI()
 
