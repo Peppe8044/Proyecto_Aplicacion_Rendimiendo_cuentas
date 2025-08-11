@@ -19,10 +19,10 @@ interface Profile01Props {
 }
 
 const defaultProfile = {
-  name: "María González",
-  role: "Freelancer",
-  avatar: "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
-  subscription: "Plan PYME",
+  name: "Usuario GastoÁgil",
+  role: "Usuario",
+  avatar: "",
+  subscription: "Plan Básico",
 } satisfies Required<Profile01Props>
 
 export default function Profile01({
@@ -63,13 +63,9 @@ export default function Profile01({
         <div className="relative px-6 pt-12 pb-6">
           <div className="flex items-center gap-4 mb-8">
             <div className="relative shrink-0">
-              <Image
-                src={avatar || "/placeholder.svg"}
-                alt={name}
-                width={72}
-                height={72}
-                className="rounded-full ring-4 ring-white dark:ring-zinc-900 object-cover"
-              />
+              <div className="w-18 h-18 bg-blue-600 rounded-full ring-4 ring-white dark:ring-zinc-900 flex items-center justify-center">
+                <span className="text-white font-bold text-2xl">GA</span>
+              </div>
               <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-zinc-900" />
             </div>
 

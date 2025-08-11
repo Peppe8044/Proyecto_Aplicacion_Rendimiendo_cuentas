@@ -4,5 +4,15 @@
         "nombre_archivo": "testboleta.png",
         "texto_extraido": "‘= Mercado\n\n°° Shop\nCompra #3024\nRECIBO\nDescription Qty Amount\nT-shirt 2 $20.00\nJeans 1 $45.00\nSneakers 1 $60.00\nSubtotal $125.00\nTax 8.5% $10.63\n\nTotal $135.63",
         "fecha": "2025-08-06T02:55:07.389849"
+    },
+    {
+        "id": 1754880361,
+        "nombre_archivo": "testboleta.png",
+        "text": "‘= Mercado\n\n°° Shop\nCompra #3024\nRECIBO\nDescription Qty Amount\nT-shirt 2 $20.00\nJeans 1 $45.00\nSneakers 1 $60.00\nSubtotal $125.00\nTax 8.5% $10.63\n\nTotal $135.63",
+        "merchant": "‘= Mercado",
+        "total_amount": 20.0,
+        "date": "2025-08-10",
+        "confidence": 0.85,
+        "fecha": "2025-08-10T22:46:01.820481"
     }
 ]

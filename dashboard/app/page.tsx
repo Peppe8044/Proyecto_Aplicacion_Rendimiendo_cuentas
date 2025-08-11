@@ -3,7 +3,7 @@
 import { useAuth } from "@/components/auth-provider"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import Dashboard from "@/components/kokonutui/dashboard"
+import Dashboard from "@/components/gastoagil/dashboard"
 
 export default function Home() {
   const { isAuthenticated, user, isLoading } = useAuth()

@@ -62,13 +62,9 @@ export default function TopNav({ isAdmin = false }: TopNavProps) {
 
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
-            <Image
-              src="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png"
-              alt="User avatar"
-              width={28}
-              height={28}
-              className="rounded-full ring-2 ring-gray-200 dark:ring-[#2B2B30] sm:w-8 sm:h-8 cursor-pointer"
-            />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-600 rounded-full flex items-center justify-center ring-2 ring-gray-200 dark:ring-[#2B2B30] cursor-pointer">
+              <span className="text-white font-bold text-sm sm:text-base">GA</span>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
@@ -76,9 +72,9 @@ export default function TopNav({ isAdmin = false }: TopNavProps) {
             className="w-[280px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
           >
             <Profile01
-              name="María González"
-              role={isAdmin ? "Administrador" : "Freelancer"}
-              avatar="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png"
+              name="Usuario GastoÁgil"
+              role={isAdmin ? "Administrador" : "Usuario"}
+              avatar=""
             />
           </DropdownMenuContent>
         </DropdownMenu>

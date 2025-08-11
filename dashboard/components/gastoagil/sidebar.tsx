@@ -102,8 +102,8 @@ export default function Sidebar({ isAdmin = false }: SidebarProps) {
             className="h-16 px-6 flex items-center border-b border-gray-200 dark:border-[#1F1F23]"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Receipt className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-green-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">GA</span>
               </div>
               <span className="text-lg font-semibold text-gray-900 dark:text-white">GastoÁgil</span>
             </div>
