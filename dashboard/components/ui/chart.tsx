@@ -8,6 +8,60 @@ import { cn } from "@/lib/utils"
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
 
+// Wrapper Chart component for usage in pages
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+} from "recharts";
+
+export function Chart({ data, type, xKey, yKey, labelKey, valueKey, title }) {
+  if (type === "bar") {
+    return (
+      <ChartContainer config={{}}>
+        <BarChart data={data} width={500} height={300}>
+          <XAxis dataKey={xKey} />
+          <YAxis />
+          <Bar dataKey={yKey} fill="#3b82f6" />
+        </BarChart>
+      </ChartContainer>
+    );
+  }
+  if (type === "pie") {
+    return (
+      <ChartContainer config={{}}>
+        <PieChart width={400} height={300}>
+          <Pie
+            data={data}
+            dataKey={valueKey}
+            nameKey={labelKey}
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+            fill="#3b82f6"
+            label
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={getPieColor(index)} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ChartContainer>
+    );
+  }
+  return null;
+}
+
+function getPieColor(index) {
+  const colors = ["#3b82f6", "#10b981", "#f59e42", "#ef4444", "#6366f1", "#fbbf24"];
+  return colors[index % colors.length];
+}
+
 export type ChartConfig = {
   [k in string]: {
     label?: React.ReactNode

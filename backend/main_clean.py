@@ -17,11 +17,11 @@ from PIL import Image
 import httpx
 
 # Importar módulos locales
-from .db import get_db, engine
-from .models import Base
-from .deps import get_current_user
-from .crud import create_boleta, list_boletas, get_boletas_stats
-from .schemas import BoletaOut, BoletaListResponse, OCRFromStorageRequest, OCRResponse
+from db import get_db, engine
+from models import Base
+from deps import get_current_user
+from crud import create_boleta, list_boletas, get_boletas_stats
+from schemas import BoletaOut, BoletaListResponse, OCRFromStorageRequest, OCRResponse
 
 # Configurar logging
 logging.basicConfig(
@@ -63,40 +63,93 @@ def parse_boleta_text(text: str) -> dict:
         # Buscar comercio (líneas que no contengan números)
         lines = text.split('\n')
         merchant = None
-        for line in lines[:5]:  # Buscar en las primeras 5 líneas
+        for line in lines[:8]:  # Buscar en las primeras 8 líneas
             line_clean = line.strip()
             if line_clean and not re.search(r'\d', line_clean) and len(line_clean) > 3:
                 merchant = line_clean
                 break
-        
-        # Buscar total (patrón de moneda)
-        total_pattern = r'[\$]?\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)'
-        total_match = re.search(total_pattern, text)
+
+        # Buscar total SOLO en la línea que contiene 'TOTAL'
         total_amount = None
-        if total_match:
-            total_str = total_match.group(1).replace(',', '')
-            try:
-                total_amount = float(total_str)
-            except ValueError:
-                pass
-        
-        # Buscar fecha (patrón de fecha)
-        date_pattern = r'(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})'
-        date_match = re.search(date_pattern, text)
+        for line in lines:
+            if 'TOTAL' in line.upper():
+                match = re.search(r'TOTAL\s*[:]?[\$]?\s*(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2,3})?)', line, re.IGNORECASE)
+                if match:
+                    total_str = match.group(1).replace('.', '').replace(',', '.')
+                    try:
+                        total_amount = float(total_str)
+                        break
+                    except ValueError:
+                        continue
+        # Buscar descripción (líneas entre encabezado y TOTAL)
+        description_lines = []
+        start_desc = False
+        for line in lines:
+            if re.search(r'DESCRIPCION|DESCRIPCIÓN|DESCRIPTION', line, re.IGNORECASE):
+                start_desc = True
+                continue
+            if 'TOTAL' in line.upper():
+                break
+            if start_desc and line.strip():
+                description_lines.append(line.strip())
+        description = ' '.join(description_lines) if description_lines else None
+
+        # Buscar fecha (varios formatos)
         detected_date = None
-        if date_match:
-            try:
-                day, month, year = date_match.groups()
-                if len(year) == 2:
-                    year = '20' + year
-                detected_date = date(int(year), int(month), int(day))
-            except ValueError:
-                pass
-        
+        date_patterns = [
+            r'(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})',
+            r'(\d{4})[/-](\d{1,2})[/-](\d{1,2})'
+        ]
+        for pat in date_patterns:
+            for line in lines:
+                match = re.search(pat, line)
+                if match:
+                    try:
+                        if len(match.groups()) == 3:
+                            if pat.startswith(r'(\d{4})'):
+                                year, month, day = match.groups()
+                            else:
+                                day, month, year = match.groups()
+                            if len(year) == 2:
+                                year = '20' + year
+                            detected_date = date(int(year), int(month), int(day))
+                            break
+                    except ValueError:
+                        continue
+            if detected_date:
+                break
+
+        # Si no se detectó total, intentar buscar en toda la línea con variantes
+        if not total_amount:
+            for line in lines:
+                match = re.search(r'(TOTAL|Total|Importe|Monto|Amount|Sum)\s*[:]?[\$]?\s*(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2,3})?)', line, re.IGNORECASE)
+                if match:
+                    total_str = match.group(2).replace('.', '').replace(',', '.')
+                    try:
+                        total_amount = float(total_str)
+                        break
+                    except ValueError:
+                        continue
+
+        # Si no se detectó fecha, intentar buscar con variantes
+        if not detected_date:
+            for line in lines:
+                match = re.search(r'(\d{2,4})[/-](\d{1,2})[/-](\d{1,2})', line)
+                if match:
+                    try:
+                        year, month, day = match.groups()
+                        if len(year) == 2:
+                            year = '20' + year
+                        detected_date = date(int(year), int(month), int(day))
+                        break
+                    except ValueError:
+                        continue
+
         return {
             "merchant": merchant,
             "total_amount": total_amount,
             "date": detected_date,
+            "description": description,
             "confidence": 0.85  # Valor por defecto
         }
     except Exception as e:

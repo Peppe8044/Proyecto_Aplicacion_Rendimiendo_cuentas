@@ -11,7 +11,8 @@ const nextConfig = {
   },
   // Configuración explícita del puerto
   experimental: {
-    serverComponentsExternalPackages: [],
+  serverExternalPackages: ["@supabase/supabase-js"],
+  // serverComponentsExternalPackages: ["@supabase/supabase-js"],
   },
 }
 

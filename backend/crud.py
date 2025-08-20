@@ -2,8 +2,8 @@ import logging
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from typing import Tuple, List
-from .models import Boleta
-from .schemas import BoletaCreate
+from models import Boleta
+from schemas import BoletaCreate
 
 logger = logging.getLogger(__name__)
 

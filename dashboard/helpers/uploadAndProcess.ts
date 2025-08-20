@@ -1,3 +1,23 @@
+/**
+ * Guarda un gasto en la tabla 'boletas' de Supabase
+ * @param expense - Objeto con los datos del gasto
+ */
+export async function saveExpense(expense: Partial<import('@/lib/supabaseClient').Boleta>) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Usuario no autenticado');
+    // Agregar el user_id si no está
+    const expenseData = { ...expense, user_id: user.id };
+    const { data, error } = await supabase
+      .from('boletas')
+      .insert([expenseData]);
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error guardando gasto:', error);
+    throw error;
+  }
+}
 import { supabase } from '@/lib/supabaseClient'
 import { OCRResponse } from '@/lib/supabaseClient'
 

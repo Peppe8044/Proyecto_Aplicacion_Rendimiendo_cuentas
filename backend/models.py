@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Text, Numeric, Date, BigInteger, String
 from datetime import datetime
-from .db import Base
+from db import Base
 
 class Boleta(Base):
     __tablename__ = "boletas"

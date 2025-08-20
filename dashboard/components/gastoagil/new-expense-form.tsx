@@ -1,9 +1,12 @@
 "use client"
 
 import type React from "react"
+import { useRouter } from "next/navigation"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { saveExpense } from "@/helpers/uploadAndProcess"
+import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -21,6 +24,7 @@ interface OCRResult {
 }
 
 export default function NewExpenseForm() {
+  const router = useRouter()
   const [isScanning, setIsScanning] = useState(false)
   const [ocrResult, setOcrResult] = useState<OCRResult | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
@@ -31,6 +35,19 @@ export default function NewExpenseForm() {
     description: "",
     date: new Date().toISOString().split("T")[0],
   })
+
+  // Sincroniza los datos extraídos por OCR con el formulario
+  useEffect(() => {
+    if (ocrResult) {
+      setFormData((prev) => ({
+        ...prev,
+        amount: ocrResult.amount || prev.amount,
+        merchant: ocrResult.merchant || prev.merchant,
+        date: ocrResult.date || prev.date,
+        description: ocrResult.items ? ocrResult.items.join(", ") : prev.description,
+      }))
+    }
+  }, [ocrResult])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const categories = [
@@ -67,24 +84,32 @@ export default function NewExpenseForm() {
         items: ["2x Café Americano", "1x Croissant"],
         confidence: 0.92,
       }
-
       setOcrResult(mockOCRResult)
-      setFormData((prev) => ({
-        ...prev,
-        amount: mockOCRResult.amount,
-        merchant: mockOCRResult.merchant,
-        date: mockOCRResult.date,
-        description: mockOCRResult.items.join(", "),
-      }))
       setIsScanning(false)
     }, 3000)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Simulate form submission
-    console.log("Submitting expense:", formData)
-    // Here you would typically send to your API
+    try {
+      await saveExpense(formData)
+      toast.success("Gasto guardado exitosamente")
+      setFormData({
+        amount: "",
+        merchant: "",
+        category: "",
+        description: "",
+        date: new Date().toISOString().split("T")[0],
+      })
+      setSelectedImage(null)
+      setOcrResult(null)
+      // Redirigir a la lista de gastos
+      setTimeout(() => {
+        router.push("/expenses")
+      }, 1200)
+    } catch (error) {
+      toast.error("Error al guardar el gasto")
+    }
   }
 
   return (

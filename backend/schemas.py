@@ -8,7 +8,8 @@ class BoletaBase(BaseModel):
     text: Optional[str] = Field(None, description="Texto extraído por OCR")
     merchant: Optional[str] = Field(None, description="Nombre del comercio")
     total_amount: Optional[float] = Field(None, description="Monto total de la boleta")
-    date: Optional[date] = Field(None, description="Fecha de la boleta")
+    date: Optional[str] = Field(None, description="Fecha de la boleta (YYYY-MM-DD)")
+    description: Optional[str] = Field(None, description="Descripción de productos/servicios")
     confidence: Optional[float] = Field(None, description="Nivel de confianza del OCR")
 
 class BoletaCreate(BoletaBase):
@@ -18,7 +19,7 @@ class BoletaCreate(BoletaBase):
 class BoletaOut(BoletaBase):
     """Esquema para respuesta de boleta"""
     id: int = Field(..., description="ID único de la boleta")
-    fecha: datetime = Field(..., description="Fecha de creación del registro")
+    fecha: Optional[str] = Field(None, description="Fecha de creación del registro (ISO)")
     
     class Config:
         from_attributes = True
@@ -38,6 +39,11 @@ class OCRFromStorageRequest(BaseModel):
 
 class OCRResponse(BaseModel):
     """Esquema para respuesta de OCR"""
+    merchant: Optional[str] = Field(None, description="Nombre del comercio")
+    total_amount: Optional[float] = Field(None, description="Monto total de la boleta")
+    date: Optional[str] = Field(None, description="Fecha de la boleta (YYYY-MM-DD)")
+    description: Optional[str] = Field(None, description="Descripción de productos/servicios")
+    confidence: Optional[float] = Field(None, description="Nivel de confianza del OCR")
     success: bool = Field(..., description="Indica si el OCR fue exitoso")
     boleta: Optional[BoletaOut] = Field(None, description="Boleta creada")
     error: Optional[str] = Field(None, description="Mensaje de error si falló")

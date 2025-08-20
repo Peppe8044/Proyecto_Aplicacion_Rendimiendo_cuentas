@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Camera, Upload, Loader2, CheckCircle, X, Receipt } from "lucide-react"
 import { toast } from "sonner"
+import { saveExpense } from "@/helpers/uploadAndProcess"
 
 interface OCRResult {
   id: number
@@ -83,11 +84,17 @@ export default function OCRScanner() {
     }
   }
 
-  const handleSaveExpense = () => {
+  const handleSaveExpense = async () => {
     if (ocrResult) {
-      // Here you would typically save to your expense database
-      toast.success("Gasto guardado exitosamente")
-      console.log("Saving expense:", ocrResult)
+      try {
+        await saveExpense(ocrResult)
+        toast.success("Gasto guardado exitosamente")
+        // Opcional: limpiar el formulario o redirigir
+        setSelectedImage(null)
+        setOcrResult(null)
+      } catch (error) {
+        toast.error("Error al guardar el gasto")
+      }
     }
   }
 
@@ -165,57 +172,54 @@ export default function OCRScanner() {
                         {Math.round(ocrResult.confidence * 100)}% confianza
                       </Badge>
                     </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Editable fields */}
+                    <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-sm font-medium text-gray-700">
-                          Comercio
-                        </Label>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {ocrResult.merchant}
-                        </p>
+                        <Label className="text-sm font-medium text-gray-700">Comercio</Label>
+                        <Input
+                          type="text"
+                          value={ocrResult.merchant}
+                          onChange={e => setOcrResult({ ...ocrResult, merchant: e.target.value })}
+                          className="text-lg font-semibold text-gray-900"
+                        />
                       </div>
-                      
                       <div>
-                        <Label className="text-sm font-medium text-gray-700">
-                          Total
-                        </Label>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {ocrResult.total_amount ? `$${ocrResult.total_amount.toLocaleString()}` : 'No detectado'}
-                        </p>
+                        <Label className="text-sm font-medium text-gray-700">Total</Label>
+                        <Input
+                          type="number"
+                          value={ocrResult.total_amount ?? ''}
+                          onChange={e => setOcrResult({ ...ocrResult, total_amount: Number(e.target.value) })}
+                          className="text-lg font-semibold text-gray-900"
+                        />
                       </div>
-                      
                       <div>
-                        <Label className="text-sm font-medium text-gray-700">
-                          Fecha
-                        </Label>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {ocrResult.date}
-                        </p>
+                        <Label className="text-sm font-medium text-gray-700">Fecha</Label>
+                        <Input
+                          type="date"
+                          value={ocrResult.date}
+                          onChange={e => setOcrResult({ ...ocrResult, date: e.target.value })}
+                          className="text-lg font-semibold text-gray-900"
+                        />
                       </div>
-                      
                       <div>
-                        <Label className="text-sm font-medium text-gray-700">
-                          Archivo
-                        </Label>
-                        <p className="text-sm text-gray-600 truncate">
-                          {ocrResult.nombre_archivo}
-                        </p>
+                        <Label className="text-sm font-medium text-gray-700">Archivo</Label>
+                        <Input
+                          type="text"
+                          value={ocrResult.nombre_archivo}
+                          onChange={e => setOcrResult({ ...ocrResult, nombre_archivo: e.target.value })}
+                          className="text-sm text-gray-600 truncate"
+                        />
                       </div>
-                    </div>
-
-                    {/* Extracted Text */}
-                    <div className="mt-4">
-                      <Label className="text-sm font-medium text-gray-700">
-                        Texto Extraído
-                      </Label>
-                      <div className="mt-2 p-3 bg-gray-50 rounded border text-sm text-gray-700 max-h-32 overflow-y-auto">
-                        <pre className="whitespace-pre-wrap font-mono">
-                          {ocrResult.text}
-                        </pre>
+                      <div className="md:col-span-2">
+                        <Label className="text-sm font-medium text-gray-700">Descripción</Label>
+                        <Input
+                          type="text"
+                          value={ocrResult.text}
+                          onChange={e => setOcrResult({ ...ocrResult, text: e.target.value })}
+                          className="text-sm text-gray-700"
+                        />
                       </div>
-                    </div>
-
+                    </form>
                     {/* Action Buttons */}
                     <div className="flex gap-3 mt-4">
                       <Button onClick={handleSaveExpense} className="flex-1">
