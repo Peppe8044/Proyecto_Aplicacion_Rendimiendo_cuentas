@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
+import { uploadAndProcess } from "@/helpers/uploadAndProcess"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -45,27 +46,19 @@ export default function OCRScanner() {
     }
     reader.readAsDataURL(file)
 
-    // Start OCR processing
     setIsScanning(true)
     setError(null)
 
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-
-      const response = await fetch('http://127.0.0.1:8000/ocr', {
-        method: 'POST',
-        body: formData
-      })
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      // Usar el helper profesional con Supabase Auth y Storage
+      const result = await uploadAndProcess(file)
+      if (result.success && result.boleta) {
+        setOcrResult(result.boleta)
+        toast.success("¡Recibo escaneado exitosamente!")
+      } else {
+        setError(result.error || "No se pudo extraer información de la boleta")
+        toast.error(result.error || "No se pudo extraer información de la boleta")
       }
-
-      const result: OCRResult = await response.json()
-      setOcrResult(result)
-      toast.success("¡Recibo escaneado exitosamente!")
-      
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Error desconocido"
       setError(errorMessage)

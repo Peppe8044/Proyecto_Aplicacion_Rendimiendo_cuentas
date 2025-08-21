@@ -3,15 +3,30 @@
  * @param expense - Objeto con los datos del gasto
  */
 export async function saveExpense(expense: Partial<import('@/lib/supabaseClient').Boleta>) {
+    if ('category' in expense) {
+      delete expense.category;
+    }
+    // Eliminar campos que no existen en la tabla
+    if ('description' in expense) {
+      delete expense.description;
+    }
+    // Si existe 'text', usarlo como 'text' (asumiendo que la columna en Supabase es 'text')
+    // Si la columna es diferente, reemplazar 'text' por el nombre correcto
+    // No modificar el nombre del campo, solo eliminar el campo description
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Usuario no autenticado');
     // Agregar el user_id si no está
+    // Si viene 'amount' del formulario, renombrar a 'total_amount'
     const expenseData = { ...expense, user_id: user.id };
+    // Eliminar campos que no existen en la tabla
     const { data, error } = await supabase
       .from('boletas')
       .insert([expenseData]);
-    if (error) throw error;
+    if (error) {
+      console.error('Error guardando gasto:', error.message || error.details || error);
+      throw new Error(error.message || error.details || JSON.stringify(error));
+    }
     return data;
   } catch (error) {
     console.error('Error guardando gasto:', error);
@@ -70,7 +85,14 @@ export async function uploadAndProcess(file: File): Promise<OCRResponse> {
     }
 
     // Llamar al backend para procesar OCR
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8001'
+    // Detectar automáticamente el host del frontend y usar el mismo para el backend OCR
+    let apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const ocrPort = process.env.NEXT_PUBLIC_OCR_API_PORT || "8001"
+    if (!apiUrl) {
+      let hostname = window.location.hostname
+      if (hostname === "localhost") hostname = "127.0.0.1"
+      apiUrl = `http://${hostname}:${ocrPort}`
+    }
     const response = await fetch(`${apiUrl}/ocr/from-storage`, {
       method: 'POST',
       headers: {

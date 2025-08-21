@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { saveExpense } from "@/helpers/uploadAndProcess"
+import { uploadAndProcess } from "@/helpers/uploadAndProcess"
 import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,23 +17,22 @@ import { Badge } from "@/components/ui/badge"
 import { Camera, Upload, Loader2, CheckCircle, X } from "lucide-react"
 
 interface OCRResult {
-  amount: string
+  total_amount: number | string
   merchant: string
   date: string
-  items: string[]
+  text: string
   confidence: number
 }
 
 export default function NewExpenseForm() {
   const router = useRouter()
-  const [isScanning, setIsScanning] = useState(false)
   const [ocrResult, setOcrResult] = useState<OCRResult | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [formData, setFormData] = useState({
-    amount: "",
+    total_amount: 0,
     merchant: "",
     category: "",
-    description: "",
+    text: "",
     date: new Date().toISOString().split("T")[0],
   })
 
@@ -41,10 +41,10 @@ export default function NewExpenseForm() {
     if (ocrResult) {
       setFormData((prev) => ({
         ...prev,
-        amount: ocrResult.amount || prev.amount,
+        total_amount: ocrResult.total_amount ? Number(ocrResult.total_amount) : prev.total_amount,
         merchant: ocrResult.merchant || prev.merchant,
         date: ocrResult.date || prev.date,
-        description: ocrResult.items ? ocrResult.items.join(", ") : prev.description,
+        text: ocrResult.text || prev.text,
       }))
     }
   }, [ocrResult])
@@ -72,33 +72,41 @@ export default function NewExpenseForm() {
     }
     reader.readAsDataURL(file)
 
-    // Simulate OCR processing
-    setIsScanning(true)
-
-    // Simulate API call delay
-    setTimeout(() => {
-      const mockOCRResult: OCRResult = {
-        amount: "25990",
-        merchant: "CAFÉ CENTRAL",
-        date: "2024-01-15",
-        items: ["2x Café Americano", "1x Croissant"],
-        confidence: 0.92,
+    // Procesar imagen con OCR real
+    try {
+      const result = await uploadAndProcess(file)
+      if (result.success && result.boleta) {
+        setOcrResult({
+          total_amount: result.boleta.total_amount ?? 0,
+          merchant: result.boleta.merchant ?? "",
+          date: result.boleta.date ?? new Date().toISOString().split("T")[0],
+          text: result.boleta.text ?? "",
+          confidence: result.boleta.confidence ?? 0,
+        })
+        toast.success("¡Recibo escaneado exitosamente!")
+      } else {
+        setOcrResult(null)
+        toast.error(result.error || "No se pudo extraer información de la boleta. Verifica la conexión con el backend OCR.")
       }
-      setOcrResult(mockOCRResult)
-      setIsScanning(false)
-    }, 3000)
+    } catch (err) {
+      setOcrResult(null)
+      toast.error("Error al procesar la imagen. No se pudo conectar con el backend OCR.")
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      await saveExpense(formData)
+      await saveExpense({
+        ...formData,
+        total_amount: Number(formData.total_amount),
+      })
       toast.success("Gasto guardado exitosamente")
       setFormData({
-        amount: "",
+        total_amount: 0,
         merchant: "",
         category: "",
-        description: "",
+        text: "",
         date: new Date().toISOString().split("T")[0],
       })
       setSelectedImage(null)
@@ -131,28 +139,8 @@ export default function NewExpenseForm() {
                   alt="Recibo escaneado"
                   className="max-w-full h-48 object-contain mx-auto rounded-lg"
                 />
-                {isScanning && (
-                  <div className="flex items-center justify-center gap-2 text-blue-600">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Procesando recibo con OCR...</span>
-                  </div>
-                )}
-                {ocrResult && (
-                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="font-medium text-green-800 dark:text-green-400">
-                        Datos extraídos exitosamente
-                      </span>
-                      <Badge variant="secondary" className="bg-green-100 text-green-800">
-                        {Math.round(ocrResult.confidence * 100)}% confianza
-                      </Badge>
-                    </div>
-                    <div className="text-sm text-green-700 dark:text-green-300">
-                      Monto: ${ocrResult.amount} • Comercio: {ocrResult.merchant}
-                    </div>
-                  </div>
-                )}
+                {/* El estado de escaneo se maneja en el scanner profesional */}
+                {/* Los datos extraídos se autocompletan en el formulario, no se muestran aquí */}
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -181,7 +169,8 @@ export default function NewExpenseForm() {
               </div>
             )}
           </div>
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+      {/* El input de imagen y el upload se manejan desde el scanner profesional */}
+      <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
         </CardContent>
       </Card>
 
@@ -194,13 +183,13 @@ export default function NewExpenseForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="amount">Monto *</Label>
+                <Label htmlFor="total_amount">Monto *</Label>
                 <Input
-                  id="amount"
+                  id="total_amount"
                   type="number"
                   placeholder="25990"
-                  value={formData.amount}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, amount: e.target.value }))}
+                  value={formData.total_amount}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, total_amount: e.target.value }))}
                   required
                 />
               </div>
@@ -251,8 +240,8 @@ export default function NewExpenseForm() {
               <Textarea
                 id="description"
                 placeholder="Almuerzo con cliente potencial..."
-                value={formData.description}
-                onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                value={formData.text}
+                onChange={(e) => setFormData((prev) => ({ ...prev, text: e.target.value }))}
                 rows={3}
               />
             </div>

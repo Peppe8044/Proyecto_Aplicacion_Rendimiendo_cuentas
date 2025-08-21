@@ -1,6 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { supabase } from "@/lib/supabaseClient"
 
 // Declarar la función global de logout
 declare global {
@@ -34,90 +35,95 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Simular verificación de autenticación al cargar
+  // Verificar sesión real de Supabase al cargar
   useEffect(() => {
-    const checkAuth = () => {
-      const savedUser = localStorage.getItem("gastoagil_user")
-      if (savedUser) {
-        try {
-          setUser(JSON.parse(savedUser))
-        } catch (error) {
-          localStorage.removeItem("gastoagil_user")
-        }
+    const checkAuth = async () => {
+      setIsLoading(true)
+      // Intentar obtener usuario actual
+      const { data: { user }, error } = await supabase.auth.getUser()
+      if (user) {
+        setUser({
+          id: user.id,
+          name: user.user_metadata?.name || user.email,
+          email: user.email,
+          role: "user",
+          plan: "pyme"
+        })
+        setIsLoading(false)
+        return
+      }
+      // Si no hay sesión, hacer login automático con las credenciales proporcionadas
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+        email: "jlguajardo.l@gmail.com",
+        password: "Pepeasd.1231"
+      })
+      if (loginData.user) {
+        setUser({
+          id: loginData.user.id,
+          name: loginData.user.user_metadata?.name || loginData.user.email,
+          email: loginData.user.email,
+          role: "user",
+          plan: "pyme"
+        })
+      } else {
+        setUser(null)
       }
       setIsLoading(false)
     }
-
     checkAuth()
   }, [])
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true)
-
-    // Simular llamada a API
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Simular usuarios de prueba
-    const mockUsers: User[] = [
-      {
-        id: "1",
-        name: "María González",
-        email: "maria@empresa.cl",
-        role: "user",
-        company: "Mi Empresa SpA",
-        plan: "pyme",
-        avatar: "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png",
-      },
-      {
-        id: "2",
-        name: "Admin GastoÁgil",
-        email: "admin@gastoagil.cl",
-        role: "admin",
-        company: "GastoÁgil",
-        plan: "pyme",
-        avatar: "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-02-albo9B0tWOSLXCVZh9rX9KFxXIVWMr.png",
-      },
-    ]
-
-    const foundUser = mockUsers.find((u) => u.email === email)
-
-    if (foundUser && password === "123456") {
-      setUser(foundUser)
-      localStorage.setItem("gastoagil_user", JSON.stringify(foundUser))
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error || !data.user) {
+      setUser(null)
       setIsLoading(false)
-      return true
+      return false
     }
-
-    setIsLoading(false)
-    return false
-  }
-
-  const register = async (userData: any): Promise<boolean> => {
-    setIsLoading(true)
-
-    // Simular llamada a API
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    const newUser: User = {
-      id: Date.now().toString(),
-      name: `${userData.firstName} ${userData.lastName}`,
-      email: userData.email,
+    setUser({
+      id: data.user.id,
+      name: data.user.user_metadata?.name || data.user.email,
+      email: data.user.email,
       role: "user",
-      company: userData.company,
-      plan: userData.plan,
-      avatar: "https://ferf1mheo22r9ira.public.blob.vercel-storage.com/avatar-01-n0x8HFv8EUetf9z6ht0wScJKoTHqf8.png",
-    }
-
-    setUser(newUser)
-    localStorage.setItem("gastoagil_user", JSON.stringify(newUser))
+      plan: "pyme"
+    })
     setIsLoading(false)
     return true
   }
 
-  const logout = () => {
+  const register = async (userData: any): Promise<boolean> => {
+    setIsLoading(true)
+    const { data, error } = await supabase.auth.signUp({
+      email: userData.email,
+      password: userData.password,
+      options: {
+        data: {
+          name: `${userData.firstName} ${userData.lastName}`,
+          company: userData.company,
+          plan: userData.plan
+        }
+      }
+    })
+    if (error || !data.user) {
+      setUser(null)
+      setIsLoading(false)
+      return false
+    }
+    setUser({
+      id: data.user.id,
+      name: data.user.user_metadata?.name || data.user.email,
+      email: data.user.email,
+      role: "user",
+      plan: "pyme"
+    })
+    setIsLoading(false)
+    return true
+  }
+
+  const logout = async () => {
+    await supabase.auth.signOut()
     setUser(null)
-    localStorage.removeItem("gastoagil_user")
-    // No redirigir automáticamente, dejar que el componente maneje la redirección
   }
 
   const value = {

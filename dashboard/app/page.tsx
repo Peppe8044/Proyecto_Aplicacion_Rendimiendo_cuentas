@@ -1,8 +1,14 @@
 "use client"
 
-import Dashboard from "@/components/gastoagil/dashboard"
+
+import Dashboard from "@/components/gastoagil/dashboard";
+import BoletasTest from "../components/BoletasTest";
 
 export default function Home() {
-  // Mostrar directamente el dashboard sin lógica de autenticación
-  return <Dashboard />
+  return (
+    <>
+      <Dashboard />
+      <BoletasTest />
+    </>
+  );
 }
