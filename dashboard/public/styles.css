@@ -1,0 +1,155 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+}
+
+.hero-bg {
+    background-color: #eef2ff;
+    background-image: radial-gradient(#dbeafe 0.5px, transparent 0.5px), radial-gradient(#dbeafe 0.5px, #eef2ff 0.5px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+}
+
+.nav-link {
+    transition: color 0.3s;
+}
+
+.nav-link.active {
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+.problem-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.problem-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.step-icon {
+    transition: all 0.3s ease;
+}
+
+.tab.active {
+    border-color: #3b82f6;
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 300px;
+    max-height: 400px;
+}
+
+@media (min-width: 768px) {
+    .chart-container {
+        height: 350px;
+    }
+}
+
+.phone {
+    width: 250px;
+    height: 500px;
+    background: #1f2937;
+    border-radius: 30px;
+    border: 2px solid #4b5563;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.phone-screen {
+    width: 230px;
+    height: 480px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.receipt {
+    position: absolute;
+    width: 80%;
+    left: 10%;
+    top: 20%;
+    background: #f3f4f6;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 10px;
+    line-height: 1.4;
+    animation: receipt-float 8s ease-in-out infinite;
+}
+
+@keyframes receipt-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.scan-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #3b82f6;
+    animation: scan 4s linear infinite;
+}
+
+@keyframes scan {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+/* Mobile menu styles */
+#mobile-menu {
+    transition: all 0.3s ease;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Button hover effects */
+.btn-primary {
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Card hover effects */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .phone {
+        width: 200px;
+        height: 400px;
+    }
+    
+    .phone-screen {
+        width: 180px;
+        height: 380px;
+    }
+    
+    .receipt {
+        font-size: 8px;
+    }
+}

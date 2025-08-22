@@ -6,7 +6,14 @@ export default function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = async () => {
-  await signOut({ callbackUrl: "http://localhost:3000/../frontend/index.html" });
+    // Borra el usuario del localStorage si existe
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('gastoagil_user');
+    }
+    // Redirige a la landing original en public
+    window.location.href = "/index.html";
+    // Si usas NextAuth y necesitas cerrar sesión en el backend, puedes agregar:
+    // await signOut({ redirect: false });
   };
 
   return (

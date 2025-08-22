@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GastoÁgil | Transforma tus Gastos en Segundos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="text-gray-800">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="container mx-auto px-4">
+            <nav class="flex justify-between items-center h-16">
+                <a href="#" class="text-2xl font-bold text-blue-600">GastoÁgil</a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#inicio" class="nav-link active">Inicio</a>
+                    <a href="#problema" class="nav-link">El Problema</a>
+                    <a href="#solucion" class="nav-link">Solución</a>
+                    <a href="#beneficios" class="nav-link">Beneficios</a>
+                                         <a href="http://localhost:3000/dashboard" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Iniciar Sesión</a>
+                </div>
+                <button id="mobile-menu-button" class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </nav>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <a href="#inicio" class="block py-2 px-4 text-sm nav-link active">Inicio</a>
+            <a href="#problema" class="block py-2 px-4 text-sm nav-link">El Problema</a>
+            <a href="#solucion" class="block py-2 px-4 text-sm nav-link">Solución</a>
+            <a href="#beneficios" class="block py-2 px-4 text-sm nav-link">Beneficios</a>
+                         <a href="http://localhost:3000/dashboard" class="block py-2 px-4 text-sm bg-blue-50 text-blue-600 font-medium">Iniciar Sesión</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="pt-24 pb-16 hero-bg">
+            <div class="container mx-auto px-4">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="text-center md:text-left">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">Transforma tus Gastos en Segundos. <span class="text-blue-600">Tu Tiempo Vuelve a Ti.</span></h1>
+                        <p class="text-lg md:text-xl text-gray-600 mb-8">La app móvil esencial para freelancers y PYMEs que quieren decir adiós al caos de los recibos y hola a la productividad.</p>
+                        <div class="flex justify-center md:justify-start space-x-4">
+                                                         <a href="http://localhost:3000/dashboard" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">Iniciar Sesión</a>
+                        </div>
+                        <p class="mt-4 text-sm text-gray-500">Accede a tu dashboard personalizado.</p>
+                    </div>
+                    <div class="flex justify-center">
+                        <div class="phone">
+                            <div class="phone-screen">
+                                <div class="p-4">
+                                    <p class="text-xs font-bold text-gray-500">ESCANEAR RECIBO</p>
+                                </div>
+                                <div class="receipt">
+                                    <p class="font-mono font-bold">CAFÉ CENTRAL</p>
+                                    <p class="font-mono">AV. PRINCIPAL 123</p>
+                                    <p class="font-mono">FECHA: 07/07/2025</p>
+                                    <p class="font-mono">--------------------</p>
+                                    <p class="font-mono">2x Café Americano.. $5.00</p>
+                                    <p class="font-mono">1x Croissant........ $3.50</p>
+                                    <p class="font-mono">--------------------</p>
+                                    <p class="font-mono font-bold">TOTAL............ $8.50</p>
+                                </div>
+                                <div class="scan-line"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="problema" class="py-20 bg-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">¿Cansado de Perder Tiempo y Dinero?</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">La gestión de gastos no debería ser un obstáculo. ¿Te suena familiar?</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="problem-card bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <div class="text-4xl mb-4">📄</div>
+                        <h3 class="text-xl font-semibold mb-2">Hojas de Cálculo y Recibos Perdidos</h3>
+                        <p class="text-gray-600">El caos de Excel y la búsqueda interminable de comprobantes físicos.</p>
+                    </div>
+                    <div class="problem-card bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <div class="text-4xl mb-4">⏳</div>
+                        <h3 class="text-xl font-semibold mb-2">Demoras en Reembolsos</h3>
+                        <p class="text-gray-600">Procesos de aprobación lentos y frustrantes que afectan tu flujo de caja.</p>
+                    </div>
+                    <div class="problem-card bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <div class="text-4xl mb-4">📉</div>
+                        <h3 class="text-xl font-semibold mb-2">Falta de Visibilidad</h3>
+                        <p class="text-gray-600">Incertidumbre sobre tus finanzas y el estado de tus gastos en tiempo real.</p>
+                    </div>
+                    <div class="problem-card bg-gray-50 p-8 rounded-xl border border-gray-200">
+                        <div class="text-4xl mb-4">🔁</div>
+                        <h3 class="text-xl font-semibold mb-2">Procesos Repetitivos</h3>
+                        <p class="text-gray-600">Tareas manuales que te quitan el foco de lo que realmente importa: tu negocio.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solucion" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">La Solución: GastoÁgil</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">Una plataforma completa que automatiza todo el proceso de gestión de gastos en 3 simples pasos.</p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="flex-1 text-center">
+                            <div class="step-icon w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-2xl">📱</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">1. Escanea</h3>
+                            <p class="text-gray-600">Toma una foto de tu recibo con la app. El OCR extrae automáticamente toda la información.</p>
+                        </div>
+                        <div class="flex-1 text-center">
+                            <div class="step-icon w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-2xl">✅</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">2. Revisa</h3>
+                            <p class="text-gray-600">Verifica que la información extraída sea correcta. Edita si es necesario en segundos.</p>
+                        </div>
+                        <div class="flex-1 text-center">
+                            <div class="step-icon w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-2xl">📊</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">3. Gestiona</h3>
+                            <p class="text-gray-600">Accede a reportes, categorización automática y control total de tus gastos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="beneficios" class="py-20 bg-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Beneficios Tangibles</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">Descubre cuánto tiempo puedes ahorrar cada semana con GastoÁgil.</p>
+                
+                <div class="max-w-2xl mx-auto mb-8">
+                    <label for="hours-input" class="block text-sm font-medium text-gray-700 mb-2">¿Cuántas horas dedicas actualmente a gestionar gastos por semana?</label>
+                    <input type="range" id="hours-input" min="1" max="20" value="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-sm text-gray-500 mt-1">
+                        <span>1 hora</span>
+                        <span id="hours-display">5 horas</span>
+                        <span>20 horas</span>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="savings-chart"></canvas>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <p class="text-lg text-gray-600">Con GastoÁgil, podrías ahorrar hasta <span class="font-bold text-green-600" id="savings-display">4 horas</span> por semana</p>
+                    <p class="text-sm text-gray-500 mt-2">Tiempo que puedes dedicar a lo que realmente importa: hacer crecer tu negocio.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="cta" class="py-20 bg-blue-600">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">¿Listo para Transformar tu Gestión de Gastos?</h2>
+                <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Únete a cientos de freelancers y PYMEs que ya están ahorrando tiempo y dinero con GastoÁgil.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                         <a href="http://localhost:3000/dashboard" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">Iniciar Sesión Ahora</a>
+                    <a href="#inicio" class="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition">Saber Más</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-blue-400 mb-4">GastoÁgil</h3>
+                    <p class="text-gray-400">Transformando la gestión de gastos para freelancers y PYMEs.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Producto</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Características</a></li>
+                        <li><a href="#" class="hover:text-white transition">Precios</a></li>
+                        <li><a href="#" class="hover:text-white transition">Integraciones</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Soporte</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Centro de Ayuda</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contacto</a></li>
+                        <li><a href="#" class="hover:text-white transition">Estado del Servicio</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Empresa</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Sobre Nosotros</a></li>
+                        <li><a href="#" class="hover:text-white transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition">Carreras</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 GastoÁgil. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth-handler.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
