@@ -3,7 +3,7 @@
 
 class AuthHandler {
     constructor() {
-        this.dashboardUrl = 'http://localhost:3000';
+    this.dashboardUrl = 'http://localhost:3000/dashboard';
         this.checkAuthStatus();
     }
 

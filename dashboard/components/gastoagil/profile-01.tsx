@@ -1,6 +1,7 @@
 "use client"
 
 import { CreditCard, Receipt, Settings, FileText, MoveUpRight, LogOut } from "lucide-react"
+import LogoutButton from "@/components/LogoutButton"
 import Link from "next/link"
 
 interface MenuItem {
@@ -32,12 +33,7 @@ export default function Profile01({
   subscription = defaultProfile.subscription,
 }: Partial<Profile01Props> = defaultProfile) {
 
-  const handleLogout = () => {
-    // Limpiar localStorage directamente
-    localStorage.removeItem("gastoagil_user")
-    // Redirigir a la landing page
-    window.location.href = "/"
-  }
+
 
   const menuItems: MenuItem[] = [
     {
@@ -104,18 +100,9 @@ export default function Profile01({
               </Link>
             ))}
 
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="w-full flex items-center justify-between p-2 
-                                hover:bg-zinc-50 dark:hover:bg-zinc-800/50 
-                                rounded-lg transition-colors duration-200"
-            >
-              <div className="flex items-center gap-2">
-                <LogOut className="w-4 h-4" />
-                <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Cerrar Sesión</span>
-              </div>
-            </button>
+            <div className="w-full flex items-center justify-between p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-lg transition-colors duration-200">
+              <LogoutButton />
+            </div>
           </div>
         </div>
       </div>
